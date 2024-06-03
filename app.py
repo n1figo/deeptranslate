@@ -1,33 +1,31 @@
 import streamlit as st
 from pdfminer.high_level import extract_text
 from docx import Document
-import openai
+from openai import OpenAI
 import io, os
 
-
-# API 키를 api_keys.json 파일에서 불러오기
+# API 키 설정
 try:
-    os.environ["OPENAI_API_KEY"] = "sk-" #openai api 키 입력
+    os.environ["OPENAI_API_KEY"] = "YOUR_OPENAI_API_KEY"  # 실제 OpenAI API 키를 입력하세요
 except ValueError as e:
-        st.error(str(e))
+    st.error(str(e))
 
-import streamlit as st
-from pdfminer.high_level import extract_text
-from docx import Document
-import openai
-import io
-
-# OpenAI API key setup
-openai.api_key = 'YOUR_OPENAI_API_KEY'
+# OpenAI 클라이언트 설정
+client = OpenAI()
 
 def translate_text(text, target_language="ko"):
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
+        response = client.chat.completions.create(
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that translates text."},
                 {"role": "user", "content": f"Translate the following text to {target_language}: {text}"}
-            ]
+            ],
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
         )
         return response.choices[0].message['content'].strip()
     except Exception as e:
@@ -49,7 +47,7 @@ def text_to_docx(text):
     buffer.seek(0)
     return buffer
 
-# Streamlit app setup
+# Streamlit 앱 설정
 st.title("PDF Translator")
 
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
@@ -70,44 +68,3 @@ if uploaded_file is not None:
                 file_name="translated.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-
-
-"""
-def translate_text(text, target_language="ko"):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=f"Translate the following text to {target_language}:\n\n{text}",
-        max_tokens=2048
-    )
-    return response.choices[0].text.strip()
-
-def pdf_to_text(file):
-    return extract_text(file)
-
-def text_to_docx(text):
-    doc = Document()
-    doc.add_paragraph(text)
-    buffer = io.BytesIO()
-    doc.save(buffer)
-    buffer.seek(0)
-    return buffer
-
-st.title("PDF Translator")
-
-uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-
-if uploaded_file is not None:
-    text = pdf_to_text(uploaded_file)
-    st.write("Translating...")
-    translated_text = translate_text(text)
-    
-    st.write("Translation complete!")
-    docx_file = text_to_docx(translated_text)
-    
-    st.download_button(
-        label="Download Translated DOCX",
-        data=docx_file,
-        file_name="translated.docx",
-        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    )
-"""
