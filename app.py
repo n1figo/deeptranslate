@@ -4,7 +4,12 @@ from docx import Document
 import openai
 import io
 
-openai.api_key = 'YOUR_OPENAI_API_KEY'
+
+# API 키를 api_keys.json 파일에서 불러오기
+with open('api_keys.json', 'r') as f:
+    api_keys = json.load(f)
+    openai.api_key = api_keys['api_key']
+    
 
 def translate_text(text, target_language="ko"):
     response = openai.Completion.create(
