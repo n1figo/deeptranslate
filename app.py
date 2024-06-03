@@ -2,14 +2,15 @@ import streamlit as st
 from pdfminer.high_level import extract_text
 from docx import Document
 import openai
-import io
+import io, os
 
 
 # API 키를 api_keys.json 파일에서 불러오기
-with open('api_keys.json', 'r') as f:
-    api_keys = json.load(f)
-    openai.api_key = api_keys['api_key']
-    
+try:
+    os.environ["OPENAI_API_KEY"] = "sk-" #openai api 키 입력
+except ValueError as e:
+        st.error(str(e))
+
 
 def translate_text(text, target_language="ko"):
     response = openai.Completion.create(
