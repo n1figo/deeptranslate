@@ -4,11 +4,6 @@ from docx import Document
 from openai import OpenAI
 import io, os
 
-# API 키 설정
-try:
-    os.environ["OPENAI_API_KEY"] = "YOUR_OPENAI_API_KEY"  # 실제 OpenAI API 키를 입력하세요
-except ValueError as e:
-    st.error(str(e))
 
 # OpenAI 클라이언트 설정
 client = OpenAI()
@@ -56,6 +51,10 @@ if uploaded_file is not None:
     text = pdf_to_text(uploaded_file)
     if text:
         st.write("Translating...")
+        # API 키 가져오기
+        openai_api_key = st.secrets["OPENAI_API_KEY"]
+        client.api_key = openai_api_key
+        
         translated_text = translate_text(text)
         
         if translated_text:
