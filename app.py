@@ -11,14 +11,13 @@ try:
 except ValueError as e:
         st.error(str(e))
 
-
 import streamlit as st
 from pdfminer.high_level import extract_text
 from docx import Document
 import openai
 import io
 
-# OpenAI API 키 설정
+# OpenAI API key setup
 openai.api_key = 'YOUR_OPENAI_API_KEY'
 
 def translate_text(text, target_language="ko"):
@@ -28,10 +27,9 @@ def translate_text(text, target_language="ko"):
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that translates text."},
                 {"role": "user", "content": f"Translate the following text to {target_language}: {text}"}
-            ],
-            max_tokens=2048
+            ]
         )
-        return response['choices'][0]['message']['content'].strip()
+        return response.choices[0].message['content'].strip()
     except Exception as e:
         st.error(f"Translation error: {e}")
         return None
@@ -51,7 +49,7 @@ def text_to_docx(text):
     buffer.seek(0)
     return buffer
 
-# Streamlit 앱 구성
+# Streamlit app setup
 st.title("PDF Translator")
 
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
