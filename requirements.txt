@@ -149,4 +149,4 @@ tokenizers==0.19.1
 toml==0.10.2
 tomli==2.0.1
 toolz==0.12.1
-torch==2.2.0
+torch==2.1.0
