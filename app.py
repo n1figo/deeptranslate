@@ -85,5 +85,5 @@ if uploaded_file is not None:
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
